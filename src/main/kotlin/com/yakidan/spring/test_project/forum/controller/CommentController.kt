@@ -29,7 +29,7 @@ class CommentController(
         )
     }
 
-    @GetMapping("/:id")
+    @GetMapping("/{id}")
     fun getCommentDto(@PathVariable id: Long): CommentDto {
         return commentService.getCommentDtoById(id)
     }

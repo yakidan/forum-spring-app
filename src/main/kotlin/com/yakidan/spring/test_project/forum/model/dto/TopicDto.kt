@@ -33,7 +33,7 @@ class TopicDto(
 
         fun toTopic(topic: TopicDto, user: User): Topic {
             return Topic(
-                topic.id ?: 0,
+                topic.id ,
                 topic.title ?: Strings.EMPTY,
                 topic.description ?: Strings.EMPTY,
                 user
