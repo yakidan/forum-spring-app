@@ -4,6 +4,7 @@ import com.yakidan.spring.test_project.forum.handler.exception.EntityNotFoundExc
 import com.yakidan.spring.test_project.forum.entity.User
 import com.yakidan.spring.test_project.forum.repository.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.PageRequest
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 
@@ -14,7 +15,7 @@ class UserService(
 ) {
 
     fun getAllUsers(): List<User> {
-        return userRepository.findAllUsers()
+        return userRepository.findAllUser(PageRequest.of(0, 10))
     }
 
     fun getUserByEmail(email: String): User {

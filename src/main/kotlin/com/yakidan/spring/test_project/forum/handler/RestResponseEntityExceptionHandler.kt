@@ -30,6 +30,6 @@ class RestResponseEntityExceptionHandler : ResponseEntityExceptionHandler() {
 
     @ExceptionHandler
     fun handleException(exception: RuntimeException): ResponseEntity<RuntimeException> {
-        return ResponseEntity(exception, HttpStatus.BAD_REQUEST)
+        return ResponseEntity(RuntimeException(exception.message, exception), HttpStatus.BAD_REQUEST)
     }
 }

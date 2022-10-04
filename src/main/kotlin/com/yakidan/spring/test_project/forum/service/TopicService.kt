@@ -6,6 +6,7 @@ import com.yakidan.spring.test_project.forum.entity.Topic
 import com.yakidan.spring.test_project.forum.entity.User
 import com.yakidan.spring.test_project.forum.repository.TopicRepository
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.PageRequest
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.stereotype.Service
 
@@ -26,8 +27,11 @@ class TopicService(
 
 
     fun getTopicsByOwn(id: Long): List<TopicDto> {
-        val topic = topicRepository.findAllByUserId(id)
-        return topic.stream().map { topic -> TopicDto.toTopicDto(topic) }.toList()
+        val topic = topicRepository.findAllByUserId(id,PageRequest.of(0,10))
+        return topic
+            .stream()
+            .map { topic -> TopicDto.toTopicDto(topic) }
+            .toList()
     }
 
 
@@ -44,7 +48,7 @@ class TopicService(
     }
 
     private fun getAllTopic(): List<Topic> {
-        return topicRepository.findAllTopics()
+        return topicRepository.findAllTopic(PageRequest.of(0,10))
     }
 
     private fun getTopicById(id: Long): Topic {

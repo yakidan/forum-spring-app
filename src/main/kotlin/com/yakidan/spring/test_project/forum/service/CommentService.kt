@@ -1,12 +1,13 @@
 package com.yakidan.spring.test_project.forum.service
 
-import com.yakidan.spring.test_project.forum.handler.exception.EntityNotFoundException
-import com.yakidan.spring.test_project.forum.model.dto.CommentDto
 import com.yakidan.spring.test_project.forum.entity.Comment
 import com.yakidan.spring.test_project.forum.entity.Topic
 import com.yakidan.spring.test_project.forum.entity.User
+import com.yakidan.spring.test_project.forum.handler.exception.EntityNotFoundException
+import com.yakidan.spring.test_project.forum.model.dto.CommentDto
 import com.yakidan.spring.test_project.forum.repository.CommentRepository
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.PageRequest
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.stereotype.Component
 
@@ -14,14 +15,6 @@ import org.springframework.stereotype.Component
 class CommentService(
     @Autowired private val commentRepository: CommentRepository
 ) {
-
-
-    fun getAllCommentDto(): List<CommentDto> {
-        return commentRepository.findAll()
-            .stream()
-            .map { comment -> CommentDto.toCommentDto(comment) }
-            .toList()
-    }
 
     fun getAllCommentDtoByUserId(userId: Long): List<CommentDto> {
         return getAllCommentByUserId(userId)
@@ -49,18 +42,11 @@ class CommentService(
         return CommentDto.toCommentDto(getCommentById(id))
     }
 
-    private fun getAllComment(): List<Comment> {
-        return commentRepository.findAll()
-    }
-
     fun saveNewCommentDto(
         commentDto: CommentDto,
         topic: Topic,
         user: User
     ): CommentDto {
-        print("${commentDto} ")
-        print("${topic} ")
-        print("${user} ")
         return CommentDto.toCommentDto(saveComment(commentDto, topic, user))
     }
 
@@ -84,12 +70,12 @@ class CommentService(
     }
 
     private fun getCommentsByTopicId(topicId: Long): List<Comment> {
-        return commentRepository.findAllByTopicId(topicId)
+        return commentRepository.findAllByTopicId(topicId, PageRequest.of(0, 10))
 
     }
 
     private fun getAllCommentByTopicIdAndUserId(topicId: Long, userId: Long): List<Comment> {
-        return commentRepository.findAllByTopicIdAndUserId(topicId, userId)
+        return commentRepository.findAllByTopicIdAndUserId(topicId, userId, PageRequest.of(0, 10))
     }
 
     private fun saveComment(
@@ -117,8 +103,9 @@ class CommentService(
 
 
     private fun getAllCommentByUserId(userId: Long): List<Comment> {
-        return commentRepository.findAllByUserId(userId)
+        return commentRepository.findAllByUserId(userId, PageRequest.of(0, 10))
     }
+
     private fun validate(comment: Comment, userId: Long) {
         if (comment.user.id != userId)
             throw AccessDeniedException("This comment isn't your")
